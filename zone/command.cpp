@@ -220,6 +220,7 @@ int command_init(void)
 		command_add("guild", "Guild manipulation commands. Use argument help for more info.", AccountStatus::EQSupport, command_guild) ||
 		command_add("guildapprove", "[guildapproveid] - Approve a guild with specified ID (guild creator receives the id).", AccountStatus::EQSupport, command_guildapprove) ||
 		command_add("guildcreate", "[guildname] - Creates an approval setup for guild name specified.", AccountStatus::EQSupport, command_guildcreate) ||
+		command_add("guildhook", "Sets a webhook to send guild messagse to", AccountStatus::Player, command_guildhook) ||
 		command_add("guildlist", "[guildapproveid] - Lists character names who have approved the guild specified by the approve id.", AccountStatus::EQSupport, command_guildlist) ||
 
 		command_add("hair", "Change the hair style of your target.", AccountStatus::GMImpossible, command_hair) ||

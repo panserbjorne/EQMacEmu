@@ -116,6 +116,7 @@ void command_gridrecord(Client* c, const Seperator* sep);
 void command_guild(Client* c, const Seperator* sep);
 void command_guildapprove(Client* c, const Seperator* sep);
 void command_guildcreate(Client* c, const Seperator* sep);
+void command_guildhook(Client* c, const Seperator* sep);
 void command_guildlist(Client* c, const Seperator* sep);
 void command_hair(Client* c, const Seperator* sep);
 void command_haircolor(Client* c, const Seperator* sep);

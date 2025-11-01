@@ -34,6 +34,7 @@
 #include "ucs.h"
 #include "queryserv.h"
 #include "../common/content/world_content_service.h"
+#include "../common/discord/discord_manager.h"
 #include "../common/repositories/player_event_logs_repository.h"
 #include "../common/events/player_event_logs.h"
 #include "../common/zone_store.h"
@@ -47,6 +48,7 @@ extern volatile bool RunLoops;
 extern volatile bool UCSServerAvailable_;
 extern UCSConnection UCSLink;
 extern QueryServConnection QSLink;
+DiscordManager* discord_manager = new DiscordManager();
 void CatchSignal(int sig_num);
 
 ZoneServer::ZoneServer(std::shared_ptr<EQ::Net::ServertalkServerConnection> in_connection, EQ::Net::ConsoleServer* in_console)
@@ -659,6 +661,29 @@ void ZoneServer::HandleMessage(uint16 opcode, const EQ::Net::Packet& p) {
 							cle->PushToTellQueue(scm2); // deallocation is handled in processing or deconstructor
 						}
 					}
+				}
+			}
+
+			// Send to Guild Webhooks
+			if (scm->chan_num == ChatChannel_Guild) {
+				// Attempt to find a webhook id for the guild
+				std::string query = "SELECT webhook_id FROM guilds WHERE id = " + std::to_string(scm->guilddbid);
+				auto results = database.QueryDatabase(query);
+				uint32_t webhook_id = (results.Success() && results.begin()[0] ? strtoll(results.begin()[0], nullptr, 10) : 0);
+
+				if (webhook_id != 0 ) {
+					// Format Message
+					DiscordWebhookMessage_Struct q;
+					q.webhook_id = webhook_id;
+					snprintf(q.message, sizeof(q.message), "**%s**: %s", scm->from, scm->message);
+
+					// Sent to Discord queue
+					discord_manager->QueueWebhookMessage (
+						q.webhook_id,
+						q.message
+					);
+					// Process Discord queue
+					discord_manager->ProcessMessageQueue();
 				}
 			}
 		}
