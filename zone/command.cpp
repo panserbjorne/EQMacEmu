@@ -957,6 +957,7 @@ void command_clearsaylink(Client *c, const Seperator *sep) {
 #include "gm_commands/guild.cpp"
 #include "gm_commands/guildapprove.cpp"
 #include "gm_commands/guildcreate.cpp"
+#include "gm_commands/guildhook.cpp"
 #include "gm_commands/guildlist.cpp"
 #include "gm_commands/hair.cpp"
 #include "gm_commands/haircolor.cpp"
