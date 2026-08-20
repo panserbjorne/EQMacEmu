@@ -4199,12 +4199,12 @@ float Mob::CheckResistSpell(uint8 resist_type, uint16 spell_id, Mob *caster, Mob
 	bool use_classic_resists = RuleB(Quarm, UseClassicResists);	// mimic resists in the eras before Sept 4 2002
 	bool no_partial = false;
 
-	//Add our level, resist and -spell resist modifier to our roll chance
+	//Add our level mod and resists to our roll chance
 	resist_chance += target_resist;
 	resist_chance += level_mod;
 
-	// PvP
-	if (caster->IsClient() && target && target->IsClient() && !use_classic_resists) {
+	// Caps resists to 196 in PvP except when a player is casting a spell on themselves
+	if (caster->IsClient() && target && target->IsClient() && !use_classic_resists && target != this) {
 		if (resist_chance > 1 && resist_chance < 200) {
 			resist_chance = resist_chance * 400 / (200 + resist_chance);		// this changes the curve from linear to the bow shape seen in parses
 		}
@@ -4253,7 +4253,7 @@ float Mob::CheckResistSpell(uint8 resist_type, uint16 spell_id, Mob *caster, Mob
 			resist_chance = 200;	// classic had low resist caps
 		}
 	}
-
+	// Add -spell resist modifier to our roll chance
 	resist_chance += resist_modifier;
 	
 	if (use_classic_resists && caster->IsNPC() && caster->GetLevel() > 24 && zone->GetZoneID() != Zones::SIRENS && zone->GetZoneID() != Zones::TEMPLEVEESHAN
